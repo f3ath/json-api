@@ -1,12 +1,4 @@
 <?php
-/**
- *  This file is part of JSON:API implementation for PHP.
- *
- *  (c) Alexey Karapetov <karapetov@gmail.com>
- *
- *  For the full copyright and license information, please view the LICENSE
- *  file that was distributed with this source code.
- */
 declare(strict_types=1);
 
 /*
@@ -28,7 +20,8 @@ use JsonApiPhp\JsonApi\Test\BaseTestCase;
 
 class DocumentTest extends BaseTestCase
 {
-    public function testCanCreateFromMeta()
+    /** @test */
+    public function testCanContainJustMeta()
     {
         $this->assertEqualsAsJson(
             ['meta' => ['foo' => 'bar']],
@@ -36,7 +29,7 @@ class DocumentTest extends BaseTestCase
         );
     }
 
-    public function testCanCreateFromErrors()
+    public function testCanContainJustErrors()
     {
         $this->assertEqualsAsJson(
             ['errors' => []],

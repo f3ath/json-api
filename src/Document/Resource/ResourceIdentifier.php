@@ -42,11 +42,6 @@ class ResourceIdentifier implements ResourceInterface
         );
     }
 
-    public function __toString(): string
-    {
-        return sprintf("%s:%s", $this->type, $this->id ?: 'null');
-    }
-
     public function identifies(ResourceInterface $resource): bool
     {
         return $resource instanceof self

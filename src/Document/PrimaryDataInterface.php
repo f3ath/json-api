@@ -1,26 +1,22 @@
 <?php
 declare(strict_types=1);
-
 /*
+ *
  * This file is part of JSON:API implementation for PHP.
  *
  * (c) Alexey Karapetov <karapetov@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
  */
 
-namespace JsonApiPhp\JsonApi\Document\Resource;
+namespace JsonApiPhp\JsonApi\Document;
 
-final class NullResource implements ResourceInterface
+
+use JsonApiPhp\JsonApi\Document\Resource\ResourceInterface;
+
+interface PrimaryDataInterface extends \JsonSerializable
 {
-    public function jsonSerialize()
-    {
-        return null;
-    }
-
-    public function identifies(ResourceInterface $resource): bool
-    {
-        return false;
-    }
+    public function identifies(ResourceInterface $another_resource): bool;
 }

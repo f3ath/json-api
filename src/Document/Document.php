@@ -23,6 +23,9 @@ final class Document implements \JsonSerializable
     use LinksTrait;
     use MetaTrait;
 
+    /**
+     * @var PrimaryDataInterface
+     */
     private $data;
     private $errors;
     private $api;
@@ -49,12 +52,15 @@ final class Document implements \JsonSerializable
 
     public static function fromResource(ResourceInterface $data): self
     {
-        $doc = new self;
-        $doc->data = $data;
-        return $doc;
+        return self::fromPrimaryData(new PrimaryData($data));
     }
 
     public static function fromResources(ResourceInterface ...$data): self
+    {
+        return self::fromPrimaryData(new PrimaryDataComposite(...$data));
+    }
+
+    private static function fromPrimaryData(PrimaryDataInterface $data)
     {
         $doc = new self;
         $doc->data = $data;
@@ -105,10 +111,10 @@ final class Document implements \JsonSerializable
             return;
         }
         foreach ($this->included as $included_resource) {
-            if ($this->hasLinkTo($included_resource) || $this->anotherIncludedResourceIdentifies($included_resource)) {
+            if ($this->data->identifies($included_resource) || $this->anotherIncludedResourceIdentifies($included_resource)) {
                 continue;
             }
-            throw new \LogicException("Full linkage is required for $included_resource");
+            throw new \LogicException("Full linkage is required for " . json_encode($included_resource));
         }
     }
 
@@ -121,27 +127,5 @@ final class Document implements \JsonSerializable
             }
         }
         return false;
-    }
-
-    private function hasLinkTo(ResourceObject $resource): bool
-    {
-        /** @var ResourceInterface $my_resource */
-        foreach ($this->toResources() as $my_resource) {
-            if ($my_resource->identifies($resource)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private function toResources(): \Iterator
-    {
-        if ($this->data instanceof ResourceInterface) {
-            yield $this->data;
-        } elseif (is_array($this->data)) {
-            foreach ($this->data as $datum) {
-                yield $datum;
-            }
-        }
     }
 }

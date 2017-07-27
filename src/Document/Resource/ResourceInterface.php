@@ -15,6 +15,4 @@ namespace JsonApiPhp\JsonApi\Document\Resource;
 interface ResourceInterface extends \JsonSerializable
 {
     public function identifies(ResourceInterface $resource): bool;
-
-    public function __toString(): string;
 }

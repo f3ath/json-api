@@ -90,7 +90,7 @@ class CompoundDocumentTest extends BaseTestCase
 
     /**
      * @expectedException \LogicException
-     * @expectedExceptionMessage Full linkage is required for apples:1
+     * @expectedExceptionMessage Full linkage is required for {"type":"apples","id":"1"}
      */
     public function testFullLinkageIsRequired()
     {

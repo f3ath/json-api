@@ -22,16 +22,16 @@ class ErrorTest extends BaseTestCase
 
     public function testErrorWithFullSetOfProperties()
     {
-        $e = new Error();
-        $e->setId('test_id');
-        $e->setAboutLink('http://localhost');
-        $e->setStatus('404');
-        $e->setCode('OMG');
-        $e->setTitle('Error');
-        $e->setDetail('Nothing is found');
-        $e->setSourcePointer('/data');
-        $e->setSourceParameter('test_param');
-        $e->setMeta(new ArrayMeta(['foo' => 'bar']));
+        $e = (new Error())
+            ->withId('test_id')
+            ->withAboutLink('http://localhost')
+            ->withStatus('404')
+            ->withCode('OMG')
+            ->withTitle('Error')
+            ->withDetail('Nothing is found')
+            ->withSourcePointer('/data')
+            ->withSourceParameter('test_param')
+            ->withMeta(new ArrayMeta(['foo' => 'bar']));
 
         $this->assertEqualsAsJson(
             [

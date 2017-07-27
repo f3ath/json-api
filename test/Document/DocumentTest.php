@@ -97,9 +97,9 @@ class DocumentTest extends BaseTestCase
 
     public function testDocumentMayContainVersion()
     {
-        $doc = $this->createNullDoc();
-        $doc->setApiVersion('1.2.3');
-        $doc->setApiMeta(['a' => 'b']);
+        $doc = $this->createNullDoc()
+            ->withApiVersion('1.2.3')
+            ->withApiMeta(['a' => 'b']);
         $this->assertEqualsAsJson(
             [
                 'data' => null,
@@ -114,9 +114,9 @@ class DocumentTest extends BaseTestCase
 
     public function testDocumentMayContainLinks()
     {
-        $doc = $this->createNullDoc();
-        $doc->setLink('self', 'http://example.com/self');
-        $doc->setLink('related', 'http://example.com/rel', ['a' => 'b']);
+        $doc = $this->createNullDoc()
+            ->withLink('self', 'http://example.com/self')
+            ->withLinkObject('related', 'http://example.com/rel', new ArrayMeta(['a' => 'b']));
         $this->assertEqualsAsJson(
             [
                 'data' => null,
@@ -134,9 +134,9 @@ class DocumentTest extends BaseTestCase
 
     private function createErrorDoc(): Document
     {
-        $e = new Error();
-        $e->setId('first');
-        return Document::fromErrors($e);
+        return Document::fromErrors(
+            (new Error())->withId('first')
+        );
     }
 
     private function createNullDoc(): Document

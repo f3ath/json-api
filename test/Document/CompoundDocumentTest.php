@@ -56,8 +56,8 @@ class CompoundDocumentTest extends BaseTestCase
                 )
             )
         );
-        $doc = \JsonApiPhp\JsonApi\Document::fromResource($basket);
-        $doc->setIncluded($apple, $orange);
+        $doc = Document::fromResource($basket)
+            ->withIncluded($apple, $orange);
         $this->assertEquals(
             [
                 [
@@ -85,16 +85,16 @@ class CompoundDocumentTest extends BaseTestCase
      */
     public function testFullLinkageIsRequired()
     {
-        $doc = Document::fromResource(new NullResource);
-        $doc->setIncluded(new ResourceObject('apples', '1'));
+        $doc = Document::fromResource(new NullResource)
+            ->withIncluded(new ResourceObject('apples', '1'));
         json_encode($doc);
     }
 
     public function testFullLinkageIsNotRequiredIfSparse()
     {
-        $doc = \JsonApiPhp\JsonApi\Document::fromResource(new NullResource);
-        $doc->markSparse();
-        $doc->setIncluded(new ResourceObject('apples', '1'));
+        $doc = Document::fromResource(new NullResource)
+            ->sparse()
+            ->withIncluded(new ResourceObject('apples', '1'));
         $this->assertCanBeBuilt($doc);
     }
 
@@ -102,8 +102,8 @@ class CompoundDocumentTest extends BaseTestCase
     {
         $apple = new ResourceObject('apples', '1');
         $apple->setAttribute('color', 'red');
-        $doc = Document::fromResource($apple->toId());
-        $doc->setIncluded($apple);
+        $doc = Document::fromResource($apple->toId())
+            ->withIncluded($apple);
         $this->assertCanBeBuilt($doc);
     }
 
@@ -124,8 +124,8 @@ class CompoundDocumentTest extends BaseTestCase
                 )
             )
         );
-        $doc = \JsonApiPhp\JsonApi\Document::fromResource($basket->toId());
-        $doc->setIncluded($apple, $basket);
+        $doc = Document::fromResource($basket->toId())
+            ->withIncluded($apple, $basket);
         $this->assertCanBeBuilt($doc);
     }
 

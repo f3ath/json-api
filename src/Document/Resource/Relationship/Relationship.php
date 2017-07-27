@@ -33,7 +33,7 @@ final class Relationship implements \JsonSerializable
     public static function fromMeta(Meta $meta): self
     {
         $r = new self;
-        $r->setMeta($meta);
+        $r->withMeta($meta);
         return $r;
     }
 

@@ -15,7 +15,7 @@ trait MetaTrait
 {
     protected $meta;
 
-    public function setMeta(Meta $meta)
+    public function withMeta(Meta $meta)
     {
         $this->meta = $meta;
     }

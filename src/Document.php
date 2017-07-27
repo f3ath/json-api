@@ -14,7 +14,6 @@ namespace JsonApiPhp\JsonApi;
 use JsonApiPhp\JsonApi\Document\Error;
 use JsonApiPhp\JsonApi\Document\LinksTrait;
 use JsonApiPhp\JsonApi\Document\Meta;
-use JsonApiPhp\JsonApi\Document\MetaTrait;
 use JsonApiPhp\JsonApi\Document\Resource\ResourceInterface;
 use JsonApiPhp\JsonApi\Document\Resource\ResourceObject;
 
@@ -24,13 +23,13 @@ class Document implements \JsonSerializable
     const DEFAULT_API_VERSION = '1.0';
 
     use LinksTrait;
-    use MetaTrait;
 
+    private $api;
     private $data;
     private $errors;
-    private $api;
     private $included;
-    private $is_sparse = false;
+    private $isSparse = false;
+    private $meta;
 
     private function __construct()
     {
@@ -38,8 +37,8 @@ class Document implements \JsonSerializable
 
     public static function fromMeta(Meta $meta): self
     {
-        $doc = new self;
-        $doc->setMeta($meta);
+        $doc = (new self)
+            ->withMeta($meta);
         return $doc;
     }
 
@@ -64,24 +63,59 @@ class Document implements \JsonSerializable
         return $doc;
     }
 
-    public function setApiVersion(string $version = self::DEFAULT_API_VERSION)
+    public function withApiVersion(string $version = self::DEFAULT_API_VERSION): self
     {
-        $this->api['version'] = $version;
+        $clone = clone $this;
+        $clone->api['version'] = $version;
+        return $clone;
     }
 
-    public function setApiMeta(array $meta)
+    public function withApiMeta(array $meta): self
     {
-        $this->api['meta'] = $meta;
+        $clone = clone $this;
+        $clone->api['meta'] = $meta;
+        return $clone;
     }
 
-    public function setIncluded(ResourceObject ...$included)
+    public function withIncluded(ResourceObject ...$included): self
     {
-        $this->included = $included;
+        $clone = clone $this;
+        $clone->included = $included;
+        return $clone;
     }
 
-    public function markSparse()
+    public function sparse(): self
     {
-        $this->is_sparse = true;
+        $clone = clone $this;
+        $clone->isSparse = true;
+        return $clone;
+    }
+
+    public function withMeta(Meta $meta): self
+    {
+        $clone = clone $this;
+        $clone->meta = $meta;
+        return $clone;
+    }
+
+    public function withLink(string $name, string $url): self
+    {
+        $clone = clone $this;
+        $clone->links[$name] = $url;
+        return $clone;
+    }
+
+    public function withLinkObject(string $name, string $href, Meta $meta = null): self
+    {
+        $link = [
+            'href' => $href,
+        ];
+        if ($meta) {
+            $link['meta'] = $meta;
+        }
+        $clone = clone $this;
+        $clone->links[$name] = $link;
+        return $clone;
     }
 
     public function jsonSerialize()
@@ -104,22 +138,22 @@ class Document implements \JsonSerializable
 
     private function enforceFullLinkage()
     {
-        if ($this->is_sparse || empty($this->included)) {
+        if ($this->isSparse || empty($this->included)) {
             return;
         }
-        foreach ($this->included as $included_resource) {
-            if ($this->hasLinkTo($included_resource) || $this->anotherIncludedResourceIdentifies($included_resource)) {
+        foreach ($this->included as $included) {
+            if ($this->hasLinkTo($included) || $this->anotherIncludedResourceIdentifies($included)) {
                 continue;
             }
-            throw new \LogicException("Full linkage is required for $included_resource");
+            throw new \LogicException("Full linkage is required for $included");
         }
     }
 
     private function anotherIncludedResourceIdentifies(ResourceObject $resource): bool
     {
-        /** @var ResourceObject $included_resource */
-        foreach ($this->included as $included_resource) {
-            if ($included_resource !== $resource && $included_resource->identifies($resource)) {
+        /** @var ResourceObject $included */
+        foreach ($this->included as $included) {
+            if ($included !== $resource && $included->identifies($resource)) {
                 return true;
             }
         }
@@ -128,9 +162,9 @@ class Document implements \JsonSerializable
 
     private function hasLinkTo(ResourceObject $resource): bool
     {
-        /** @var ResourceInterface $my_resource */
-        foreach ($this->toResources() as $my_resource) {
-            if ($my_resource->identifies($resource)) {
+        /** @var ResourceInterface $existingResource */
+        foreach ($this->toResources() as $existingResource) {
+            if ($existingResource->identifies($resource)) {
                 return true;
             }
         }

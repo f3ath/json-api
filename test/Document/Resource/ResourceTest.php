@@ -83,7 +83,7 @@ class ResourceTest extends BaseTestCase
                 ],
                 (function () {
                     $resource = new ResourceObject('books', '42abc');
-                    $resource->setMeta(new ArrayMeta(['foo' => 'bar']));
+                    $resource->withMeta(new ArrayMeta(['foo' => 'bar']));
                     $resource->setAttribute('attr', 'val');
                     $resource->setLink('self', 'http://localhost');
                     $resource->setRelationship('author', Relationship::fromMeta(new ArrayMeta(['a' => 'b'])));

@@ -26,7 +26,7 @@ class ResourceIdentifier implements ResourceInterface
         $this->type = $type;
         $this->id = $id;
         if ($meta) {
-            $this->setMeta($meta);
+            $this->withMeta($meta);
         }
     }
 

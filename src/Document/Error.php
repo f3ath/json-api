@@ -13,54 +13,76 @@ namespace JsonApiPhp\JsonApi\Document;
 
 final class Error implements \JsonSerializable
 {
-    use MetaTrait;
-
+    private $code;
+    private $detail;
     private $id;
     private $links;
-    private $status;
-    private $code;
-    private $title;
-    private $detail;
+    private $meta;
     private $source;
+    private $status;
+    private $title;
 
-    public function setId(string $id)
+    public function withId(string $id): self
     {
-        $this->id = $id;
+        $clone = clone $this;
+        $clone->id = $id;
+        return $clone;
     }
 
-    public function setAboutLink(string $link)
+    public function withAboutLink(string $link): self
     {
-        $this->links['about'] = $link;
+        $clone = clone $this;
+        $clone->links['about'] = $link;
+        return $clone;
     }
 
-    public function setStatus(string $status)
+    public function withStatus(string $status): self
     {
-        $this->status = $status;
+        $clone = clone $this;
+        $clone->status = $status;
+        return $clone;
     }
 
-    public function setCode(string $code)
+    public function withCode(string $code): self
     {
-        $this->code = $code;
+        $clone = clone $this;
+        $clone->code = $code;
+        return $clone;
     }
 
-    public function setTitle(string $title)
+    public function withTitle(string $title): self
     {
-        $this->title = $title;
+        $clone = clone $this;
+        $clone->title = $title;
+        return $clone;
     }
 
-    public function setDetail(string $detail)
+    public function withDetail(string $detail): self
     {
-        $this->detail = $detail;
+        $clone = clone $this;
+        $clone->detail = $detail;
+        return $clone;
     }
 
-    public function setSourcePointer(string $pointer)
+    public function withSourcePointer(string $pointer): self
     {
-        $this->source['pointer'] = $pointer;
+        $clone = clone $this;
+        $clone->source['pointer'] = $pointer;
+        return $clone;
     }
 
-    public function setSourceParameter(string $parameter)
+    public function withSourceParameter(string $parameter): self
     {
-        $this->source['parameter'] = $parameter;
+        $clone = clone $this;
+        $clone->source['parameter'] = $parameter;
+        return $clone;
+    }
+
+    public function withMeta(Meta $meta): self
+    {
+        $clone = clone $this;
+        $clone->meta = $meta;
+        return $clone;
     }
 
     public function jsonSerialize()
